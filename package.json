@@ -1,0 +1,25 @@
+{
+  "name": "roka",
+  "version": "1.0.0",
+  "description": "High-level styling library for styled-components",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/azer/roka.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/azer/roka/issues"
+  },
+  "homepage": "https://github.com/azer/roka#readme",
+  "dependencies": {
+    "styled-components": "^4.1.3"
+  },
+  "devDependencies": {
+    "typescript": "^3.3.3333"
+  }
+}
