@@ -2,6 +2,12 @@
 
 High-level styling library for [styled-components](https://github.com/styled-components/styled-components).
 
+## Install
+
+```bash
+$ yarn add azer/roka
+```
+
 ## Usage Examples
 
 ### Hello World
