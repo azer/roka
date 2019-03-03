@@ -1,16 +1,16 @@
 import styled, { css as _css, StyledComponentClass } from "styled-components"
-import color, { IOptions as ColorOptions } from "./lib/color"
-import { override } from "./lib/css"
-import spacing, { IOptions as SpacingOptions } from "./lib/spacing"
-import grid, { IOptions as GridOptions } from "./lib/grid"
-import position, { IOptions as PositionOptions } from "./lib/position"
-import Rows from "./lib/rows"
-import setType, { IOptions as TypeOptions } from "./lib/type"
-import setBorder, { IOptions as BorderOptions } from "./lib/border"
-import box, { IOptions as BoxOptions } from "./lib/box"
-import setList, { IOptions as ListOptions } from "./lib/list"
-import setTransitions, { ITransition } from "./lib/transitions"
-import setBackground, { IOptions as BackgroundOptions } from "./lib/bg"
+import color, { IOptions as ColorOptions } from "./color"
+import { override } from "./css"
+import setSpacing, { IOptions as SpacingOptions } from "./spacing"
+import grid, { IOptions as GridOptions } from "./grid"
+import position, { IOptions as PositionOptions } from "./position"
+import Rows from "./rows"
+import setType, { IOptions as TypeOptions } from "./type"
+import setBorder, { IOptions as BorderOptions } from "./border"
+import box, { IOptions as BoxOptions } from "./box"
+import setList, { IOptions as ListOptions } from "./list"
+import setTransitions, { ITransition } from "./transitions"
+import setBackground, { IOptions as BackgroundOptions } from "./bg"
 
 type ICondFn = (props: { [name: string]: any }) => boolean
 type IWithFn = (props: { [name: string]: any }) => Roka
@@ -319,8 +319,9 @@ class Roka {
     return this
   }
 
-  spacing(options: GapOptions): Roka {
-    gap(this.rows, options)
+  spacing(options: SpacingOptions): Roka {
+    setSpacing(this.rows, options)
+    return this
   }
 
   sticky(options?: PositionOptions): Roka {
