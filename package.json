@@ -21,6 +21,7 @@
     "styled-components": "4.0.3"
   },
   "devDependencies": {
+    "typedoc": "^0.14.2",
     "typescript": "^3.3.3333"
   }
 }
