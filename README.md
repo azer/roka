@@ -2,6 +2,12 @@
 
 High-level styling library for [styled-components](https://github.com/styled-components/styled-components).
 
+## Install
+
+```bash
+$ yarn add azer/roka
+```
+
 ## Usage Examples
 
 ### Hello World
@@ -10,9 +16,11 @@ High-level styling library for [styled-components](https://github.com/styled-com
 import roka from "roka"
 
 const HelloWorld = roka()
+  .absolute()
+  .stretch()
   .center()
-  .absolute({ left: "0", right: "0" })
-  .easein(0.1)
+  .sans({ size: "3rem" })
+  .color({ fg: "yellow", bg: "#FF6A86" })
   .element()
 
 export default (props: IProps) => {
