@@ -66,14 +66,18 @@
 			<div class="tsd-panel tsd-typography">
 				<h1 id="roka">Roka</h1>
 				<p>High-level styling library for <a href="https://github.com/styled-components/styled-components">styled-components</a>.</p>
+				<h2 id="install">Install</h2>
+				<pre><code class="language-bash">$ yarn add azer/roka</code></pre>
 				<h2 id="usage-examples">Usage Examples</h2>
 				<h3 id="hello-world">Hello World</h3>
 				<pre><code class="language-tsx">import roka from &quot;roka&quot;
 
 const HelloWorld = roka()
+  .absolute()
+  .stretch()
   .center()
-  .absolute({ left: &quot;0&quot;, right: &quot;0&quot; })
-  .easein(0.1)
+  .sans({ size: &quot;3rem&quot; })
+  .color({ fg: &quot;yellow&quot;, bg: &quot;#FF6A86&quot; })
   .element()
 
 export default (props: IProps) =&gt; {
