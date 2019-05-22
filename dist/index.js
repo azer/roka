@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const styled_components_1 = require("styled-components");
+//import styled, { css as _css, StyledComponentClass } from "styled-components"
+const react_1 = require("react");
+const emotion_1 = require("emotion");
 const color_1 = require("./color");
 const css_1 = require("./css");
 const spacing_1 = require("./spacing");
@@ -75,9 +77,8 @@ class Roka {
         return this;
     }
     css() {
-        return styled_components_1.css `
-      ${this.rows.compile()};
-    `;
+        console.log("final css:", this.rows.compile());
+        return emotion_1.css(this.rows.compile());
     }
     depth(options) {
         if (options.front) {
@@ -100,15 +101,23 @@ class Roka {
         return this;
     }
     element(tag) {
-        // @ts-ignore
-        return styled_components_1.default(tag || "div")([this.rows.compile()], props => {
-            const s = this.conditions
+        return props => {
+            this.conditions
                 .filter(c => c.fn(props))
-                .map(c => c.style.rows.compile())
-                .concat(this.withFns.map(withFn => withFn(props).rows.compile()))
-                .join("\n");
-            return s;
-        });
+                .forEach(c => this.rows.concat(c.style.rows));
+            this.withFns
+                .map(withFn => withFn(props))
+                .forEach(c => this.rows.concat(c.rows));
+            return react_1.createElement(tag || "div", { className: this.css() }, props.children);
+        };
+        /*// @ts-ignore
+        return styled(tag || "div")([this.rows.compile()], props => {
+    
+    
+            .join("\n")
+    
+          return s
+        })*/
     }
     fg(colorCode) {
         this.color({ fg: colorCode });

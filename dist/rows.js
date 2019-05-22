@@ -10,21 +10,22 @@ class Rows {
         };
     }
     compile() {
-        const rows = [];
+        const result = {};
         for (const key in this.raw) {
             if (this.raw[key] instanceof Rows) {
-                rows.push(`  ${key} {
-  ${this.raw[key].compile()}
-}`);
+                result[key] = this.raw[key].compile();
             }
             else if (Array.isArray(this.raw[key])) {
-                rows.push(`${key}: ${this.raw[key].join(" ")};`);
+                result[key] = this.raw[key].join(" ");
             }
             else {
-                rows.push(`  ${key}: ${this.raw[key]};`);
+                result[key] = this.raw[key];
             }
         }
-        return rows.join("\n");
+        return result;
+    }
+    concat(rows) {
+        this.raw = Object.assign({}, this.raw, rows.raw);
     }
     set(key, value) {
         if (!exports.listEnabledFor[key]) {

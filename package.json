@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/azer/roka#readme",
   "dependencies": {
-    "@types/styled-components": "^4.0.3",
+    "@types/styled-components": "4.0.3",
+    "emotion": "^10.0.9",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "styled-components": "4.0.3"
   },
   "devDependencies": {

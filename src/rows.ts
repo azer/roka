@@ -1,3 +1,7 @@
+interface EmotionCSS {
+  [key: string]: string | EmotionCSS
+}
+
 export const listEnabledFor: { [prop: string]: boolean } = {
   transform: true
 }
@@ -10,22 +14,27 @@ export default class Rows {
     }
   }
 
-  compile(): string {
-    const rows: string[] = []
+  compile(): EmotionCSS {
+    const result: EmotionCSS = {}
 
     for (const key in this.raw) {
       if (this.raw[key] instanceof Rows) {
-        rows.push(`  ${key} {
-  ${(this.raw[key] as Rows).compile()}
-}`)
+        result[key] = (this.raw[key] as Rows).compile()
       } else if (Array.isArray(this.raw[key])) {
-        rows.push(`${key}: ${(this.raw[key] as string[]).join(" ")};`)
+        result[key] = (this.raw[key] as string[]).join(" ")
       } else {
-        rows.push(`  ${key}: ${this.raw[key]};`)
+        result[key] = this.raw[key] as string
       }
     }
 
-    return rows.join("\n")
+    return result
+  }
+
+  concat(rows: Rows) {
+    this.raw = {
+      ...this.raw,
+      ...rows.raw
+    }
   }
 
   set(key: string, value: string | Rows) {

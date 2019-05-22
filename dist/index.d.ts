@@ -1,4 +1,4 @@
-import { StyledComponentClass } from "styled-components";
+/// <reference types="react" />
 import { IOptions as ColorOptions } from "./color";
 import { IOptions as SpacingOptions } from "./spacing";
 import { IOptions as GridOptions } from "./grid";
@@ -37,7 +37,7 @@ declare class Roka {
     cond(fn: ICondFn, style: Roka): Roka;
     content(text: string): Roka;
     cover(image: string): Roka;
-    css(): any;
+    css(): string;
     depth(options: {
         front?: boolean;
         back?: boolean;
@@ -45,7 +45,9 @@ declare class Roka {
     }): Roka;
     easein(time: number, props?: string[]): Roka;
     easeout(time: number, props?: string[]): Roka;
-    element(tag?: string): StyledComponentClass<any, any>;
+    element(tag?: string): (props: any) => import("react").ReactElement<{
+        className: string;
+    }, string | ((props: any) => import("react").ReactElement<any, string | any | (new (props: any) => import("react").Component<any, any, any>)>) | (new (props: any) => import("react").Component<any, any, any>)>;
     fg(colorCode: string): Roka;
     fixed(options?: PositionOptions): Roka;
     front(): Roka;

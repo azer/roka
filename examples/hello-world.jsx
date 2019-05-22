@@ -8,6 +8,16 @@ const HelloWorld = roka()
   .center()
   .sans({ size: "3rem" })
   .color({ fg: "yellow", bg: "#FF6A86" })
+  .select("&:hover", roka().color({ fg: "#ff6a86", bg: "yellow" }))
+  .cond(({ randomNumber }) => randomNumber == 3, roka().color({ bg: "black" }))
+  .with(({ randomNumber }) =>
+    roka().select("&::after", roka().content(` (${randomNumber})`))
+  )
   .element()
 
-ReactDOM.render(<HelloWorld>Hello World</HelloWorld>, document.body)
+const randomNumber = Math.floor(Math.random() * 5)
+
+ReactDOM.render(
+  <HelloWorld randomNumber={randomNumber}>Hello World</HelloWorld>,
+  document.body
+)

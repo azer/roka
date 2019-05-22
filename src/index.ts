@@ -1,4 +1,6 @@
-import styled, { css as _css, StyledComponentClass } from "styled-components"
+//import styled, { css as _css, StyledComponentClass } from "styled-components"
+import { createElement } from "react"
+import { css } from "emotion"
 import color, { IOptions as ColorOptions } from "./color"
 import { override } from "./css"
 import setSpacing, { IOptions as SpacingOptions } from "./spacing"
@@ -102,9 +104,8 @@ class Roka {
   }
 
   css() {
-    return _css`
-      ${this.rows.compile()};
-    `
+    console.log("final css:", this.rows.compile())
+    return css(this.rows.compile())
   }
 
   depth(options: { front?: boolean; back?: boolean; index?: number }): Roka {
@@ -133,17 +134,31 @@ class Roka {
     return this
   }
 
-  element(tag?: string): StyledComponentClass<any, any> {
-    // @ts-ignore
-    return styled(tag || "div")([this.rows.compile()], props => {
-      const s = this.conditions
+  element(tag?: string) {
+    return props => {
+      this.conditions
         .filter(c => c.fn(props))
-        .map(c => c.style.rows.compile())
-        .concat(this.withFns.map(withFn => withFn(props).rows.compile()))
+        .forEach(c => this.rows.concat(c.style.rows))
+
+      this.withFns
+        .map(withFn => withFn(props))
+        .forEach(w => this.rows.concat(w.rows))
+
+      return createElement(
+        tag || "div",
+        { className: this.css() },
+        props.children
+      )
+    }
+
+    /*// @ts-ignore
+    return styled(tag || "div")([this.rows.compile()], props => {
+
+
         .join("\n")
 
       return s
-    })
+    })*/
   }
 
   fg(colorCode: string): Roka {

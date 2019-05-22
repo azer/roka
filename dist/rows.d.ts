@@ -1,3 +1,6 @@
+interface EmotionCSS {
+    [key: string]: string | EmotionCSS;
+}
 export declare const listEnabledFor: {
     [prop: string]: boolean;
 };
@@ -6,6 +9,8 @@ export default class Rows {
         [key: string]: string | string[] | Rows;
     };
     constructor();
-    compile(): string;
+    compile(): EmotionCSS;
+    concat(rows: Rows): void;
     set(key: string, value: string | Rows): void;
 }
+export {};
