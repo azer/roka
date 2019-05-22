@@ -104,7 +104,6 @@ class Roka {
   }
 
   css() {
-    console.log("final css:", this.rows.compile())
     return css(this.rows.compile())
   }
 

@@ -77,7 +77,6 @@ class Roka {
         return this;
     }
     css() {
-        console.log("final css:", this.rows.compile());
         return emotion_1.css(this.rows.compile());
     }
     depth(options) {
@@ -107,7 +106,7 @@ class Roka {
                 .forEach(c => this.rows.concat(c.style.rows));
             this.withFns
                 .map(withFn => withFn(props))
-                .forEach(c => this.rows.concat(c.rows));
+                .forEach(w => this.rows.concat(w.rows));
             return react_1.createElement(tag || "div", { className: this.css() }, props.children);
         };
         /*// @ts-ignore
