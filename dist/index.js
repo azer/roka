@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-//import styled, { css as _css, StyledComponentClass } from "styled-components"
 const react_1 = require("react");
 const emotion_1 = require("emotion");
 const color_1 = require("./color");
@@ -18,8 +17,6 @@ const bg_1 = require("./bg");
 class Roka {
     constructor() {
         this.rows = new rows_1.default();
-        this.conditions = [];
-        this.withFns = [];
     }
     absolute(options) {
         position_1.default(this.rows, css_1.override(options || {}, {
@@ -55,9 +52,7 @@ class Roka {
     }
     clone() {
         const clone = new Roka();
-        clone.conditions = this.conditions.slice();
-        clone.rows.raw = Object.assign({}, this.rows.raw);
-        clone.withFns = this.withFns.slice();
+        clone.rows.raw = this.rows.raw.slice();
         return clone;
     }
     color(options) {
@@ -65,7 +60,7 @@ class Roka {
         return this;
     }
     cond(fn, style) {
-        this.conditions.push({ fn, style });
+        this.rows.add({ condfn: fn, value: style.rows });
         return this;
     }
     content(text) {
@@ -76,8 +71,8 @@ class Roka {
         this.bg({ image, cover: true });
         return this;
     }
-    css() {
-        return emotion_1.css(this.rows.compile());
+    css(props) {
+        return emotion_1.css(this.rows.compile(props));
     }
     depth(options) {
         if (options.front) {
@@ -101,22 +96,8 @@ class Roka {
     }
     element(tag) {
         return props => {
-            this.conditions
-                .filter(c => c.fn(props))
-                .forEach(c => this.rows.concat(c.style.rows));
-            this.withFns
-                .map(withFn => withFn(props))
-                .forEach(w => this.rows.concat(w.rows));
-            return react_1.createElement(tag || "div", { className: this.css() }, props.children);
+            return react_1.createElement(tag || "div", { className: this.css(props) }, props.children);
         };
-        /*// @ts-ignore
-        return styled(tag || "div")([this.rows.compile()], props => {
-    
-    
-            .join("\n")
-    
-          return s
-        })*/
     }
     fg(colorCode) {
         this.color({ fg: colorCode });
@@ -296,7 +277,7 @@ class Roka {
         return this;
     }
     with(fn) {
-        this.withFns.push(fn);
+        this.rows.add({ value: (props) => fn(props).rows });
         return this;
     }
 }

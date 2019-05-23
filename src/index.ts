@@ -1,4 +1,3 @@
-//import styled, { css as _css, StyledComponentClass } from "styled-components"
 import { createElement } from "react"
 import { css } from "emotion"
 import color, { IOptions as ColorOptions } from "./color"
@@ -6,7 +5,7 @@ import { override } from "./css"
 import setSpacing, { IOptions as SpacingOptions } from "./spacing"
 import grid, { IOptions as GridOptions } from "./grid"
 import position, { IOptions as PositionOptions } from "./position"
-import Rows from "./rows"
+import Rows, { ICondFn, IPropFn } from "./rows"
 import setType, { IOptions as TypeOptions } from "./type"
 import setBorder, { IOptions as BorderOptions } from "./border"
 import box, { IOptions as BoxOptions } from "./box"
@@ -14,22 +13,10 @@ import setList, { IOptions as ListOptions } from "./list"
 import setTransitions, { ITransition } from "./transitions"
 import setBackground, { IOptions as BackgroundOptions } from "./bg"
 
-type ICondFn = (props: { [name: string]: any }) => boolean
-type IWithFn = (props: { [name: string]: any }) => Roka
-
-interface ICondition {
-  fn: ICondFn
-  style: Roka
-}
-
 class Roka {
   rows: Rows
-  conditions: ICondition[]
-  withFns: IWithFn[]
   constructor() {
     this.rows = new Rows()
-    this.conditions = []
-    this.withFns = []
   }
 
   absolute(options?: PositionOptions): Roka {
@@ -77,9 +64,7 @@ class Roka {
 
   clone(): Roka {
     const clone = new Roka()
-    clone.conditions = this.conditions.slice()
-    clone.rows.raw = Object.assign({}, this.rows.raw)
-    clone.withFns = this.withFns.slice()
+    clone.rows.raw = this.rows.raw.slice()
     return clone
   }
 
@@ -89,7 +74,7 @@ class Roka {
   }
 
   cond(fn: ICondFn, style: Roka): Roka {
-    this.conditions.push({ fn, style })
+    this.rows.add({ condfn: fn, value: style.rows })
     return this
   }
 
@@ -103,8 +88,8 @@ class Roka {
     return this
   }
 
-  css() {
-    return css(this.rows.compile())
+  css(props: { [name: string]: any }) {
+    return css(this.rows.compile(props))
   }
 
   depth(options: { front?: boolean; back?: boolean; index?: number }): Roka {
@@ -135,29 +120,12 @@ class Roka {
 
   element(tag?: string) {
     return props => {
-      this.conditions
-        .filter(c => c.fn(props))
-        .forEach(c => this.rows.concat(c.style.rows))
-
-      this.withFns
-        .map(withFn => withFn(props))
-        .forEach(w => this.rows.concat(w.rows))
-
       return createElement(
         tag || "div",
-        { className: this.css() },
+        { className: this.css(props) },
         props.children
       )
     }
-
-    /*// @ts-ignore
-    return styled(tag || "div")([this.rows.compile()], props => {
-
-
-        .join("\n")
-
-      return s
-    })*/
   }
 
   fg(colorCode: string): Roka {
@@ -395,8 +363,8 @@ class Roka {
     return this
   }
 
-  with(fn: IWithFn): Roka {
-    this.withFns.push(fn)
+  with(fn: (props: { [name: string]: any }) => Roka): Roka {
+    this.rows.add({ value: (props: { [name: string]: any }) => fn(props).rows })
     return this
   }
 }

@@ -1,5 +1,14 @@
-interface EmotionCSS {
-  [key: string]: string | EmotionCSS
+interface IEmotionCSS {
+  [key: string]: string | IEmotionCSS
+}
+
+export type ICondFn = (props: { [name: string]: any }) => boolean
+export type IPropFn = (props: { [name: string]: any }) => Rows
+
+export interface IProperty {
+  condfn?: ICondFn
+  key?: string
+  value?: string | string[] | Rows | IPropFn
 }
 
 export const listEnabledFor: { [prop: string]: boolean } = {
@@ -7,23 +16,47 @@ export const listEnabledFor: { [prop: string]: boolean } = {
 }
 
 export default class Rows {
-  raw: { [key: string]: string | string[] | Rows }
+  raw: IProperty[]
   constructor() {
-    this.raw = {
-      "box-sizing": "border-box"
-    }
+    this.raw = [
+      {
+        key: "box-sizing",
+        value: "border-box"
+      }
+    ] as IProperty[]
   }
 
-  compile(): EmotionCSS {
-    const result: EmotionCSS = {}
+  compile(props: { [name: string]: any }, _result?: IEmotionCSS): IEmotionCSS {
+    let result: IEmotionCSS = {
+      ..._result
+    }
 
-    for (const key in this.raw) {
-      if (this.raw[key] instanceof Rows) {
-        result[key] = (this.raw[key] as Rows).compile()
-      } else if (Array.isArray(this.raw[key])) {
-        result[key] = (this.raw[key] as string[]).join(" ")
+    let i = -1
+    const len = this.raw.length
+    while (++i < len) {
+      if (this.raw[i].condfn && !this.raw[i].condfn(props)) {
+        continue
+      }
+
+      let key = this.raw[i].key
+      let value = this.raw[i].value
+
+      if (value instanceof Rows) {
+        if (typeof key !== "undefined") {
+          result[key] = value.compile(props)
+        } else {
+          result = value.compile(props, result)
+        }
+      } else if (typeof value === "function") {
+        if (typeof key !== "undefined") {
+          result[key] = value(props).compile(props)
+        } else {
+          result = value(props).compile(props, result)
+        }
+      } else if (Array.isArray(value)) {
+        result[key] = (value as string[]).join(" ")
       } else {
-        result[key] = this.raw[key] as string
+        result[key] = value as string
       }
     }
 
@@ -31,22 +64,27 @@ export default class Rows {
   }
 
   concat(rows: Rows) {
-    this.raw = {
-      ...this.raw,
-      ...rows.raw
-    }
+    this.raw = this.raw.concat(rows.raw)
+  }
+
+  add(property: IProperty) {
+    this.raw.push(property)
   }
 
   set(key: string, value: string | Rows) {
+    // Properties like `transform` contains space-separated multiple values.
+    // `set` might get called multiple times for one transform, so we need to group them together.
     if (!listEnabledFor[key]) {
-      this.raw[key] = value
+      this.raw.push({ key, value })
       return
     }
 
-    if (!this.raw[key]) {
-      this.raw[key] = []
+    const existing = this.raw.find(row => row.key === key)
+    if (existing) {
+      ;(existing.value as string[]).push(value as string)
+      return
     }
 
-    ;(this.raw[key] as string[]).push(value as string)
+    this.raw.push({ key, value: [value as string] })
   }
 }

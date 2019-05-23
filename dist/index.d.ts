@@ -3,27 +3,15 @@ import { IOptions as ColorOptions } from "./color";
 import { IOptions as SpacingOptions } from "./spacing";
 import { IOptions as GridOptions } from "./grid";
 import { IOptions as PositionOptions } from "./position";
-import Rows from "./rows";
+import Rows, { ICondFn } from "./rows";
 import { IOptions as TypeOptions } from "./type";
 import { IOptions as BorderOptions } from "./border";
 import { IOptions as BoxOptions } from "./box";
 import { IOptions as ListOptions } from "./list";
 import { ITransition } from "./transitions";
 import { IOptions as BackgroundOptions } from "./bg";
-declare type ICondFn = (props: {
-    [name: string]: any;
-}) => boolean;
-declare type IWithFn = (props: {
-    [name: string]: any;
-}) => Roka;
-interface ICondition {
-    fn: ICondFn;
-    style: Roka;
-}
 declare class Roka {
     rows: Rows;
-    conditions: ICondition[];
-    withFns: IWithFn[];
     constructor();
     absolute(options?: PositionOptions): Roka;
     back(): Roka;
@@ -37,7 +25,9 @@ declare class Roka {
     cond(fn: ICondFn, style: Roka): Roka;
     content(text: string): Roka;
     cover(image: string): Roka;
-    css(): string;
+    css(props: {
+        [name: string]: any;
+    }): string;
     depth(options: {
         front?: boolean;
         back?: boolean;
@@ -78,7 +68,9 @@ declare class Roka {
     uppercase(options?: TypeOptions): Roka;
     text(options: TypeOptions): Roka;
     transparent(): Roka;
-    with(fn: IWithFn): Roka;
+    with(fn: (props: {
+        [name: string]: any;
+    }) => Roka): Roka;
 }
 declare const _default: () => Roka;
 export default _default;

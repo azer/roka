@@ -5,38 +5,68 @@ exports.listEnabledFor = {
 };
 class Rows {
     constructor() {
-        this.raw = {
-            "box-sizing": "border-box"
-        };
-    }
-    compile() {
-        const result = {};
-        for (const key in this.raw) {
-            if (this.raw[key] instanceof Rows) {
-                result[key] = this.raw[key].compile();
+        this.raw = [
+            {
+                key: "box-sizing",
+                value: "border-box"
             }
-            else if (Array.isArray(this.raw[key])) {
-                result[key] = this.raw[key].join(" ");
+        ];
+    }
+    compile(props, _result) {
+        let result = Object.assign({}, _result);
+        let i = -1;
+        const len = this.raw.length;
+        while (++i < len) {
+            if (this.raw[i].condfn && !this.raw[i].condfn(props)) {
+                continue;
+            }
+            let key = this.raw[i].key;
+            let value = this.raw[i].value;
+            if (value instanceof Rows) {
+                if (typeof key !== "undefined") {
+                    result[key] = value.compile(props);
+                }
+                else {
+                    result = value.compile(props, result);
+                }
+            }
+            else if (typeof value === "function") {
+                if (typeof key !== "undefined") {
+                    result[key] = value(props).compile(props);
+                }
+                else {
+                    result = value(props).compile(props, result);
+                }
+            }
+            else if (Array.isArray(value)) {
+                result[key] = value.join(" ");
             }
             else {
-                result[key] = this.raw[key];
+                result[key] = value;
             }
         }
         return result;
     }
     concat(rows) {
-        this.raw = Object.assign({}, this.raw, rows.raw);
+        this.raw = this.raw.concat(rows.raw);
+    }
+    add(property) {
+        this.raw.push(property);
     }
     set(key, value) {
+        // Properties like `transform` contains space-separated multiple values.
+        // `set` might get called multiple times for one transform, so we need to group them together.
         if (!exports.listEnabledFor[key]) {
-            this.raw[key] = value;
+            this.raw.push({ key, value });
             return;
         }
-        if (!this.raw[key]) {
-            this.raw[key] = [];
+        const existing = this.raw.find(row => row.key === key);
+        if (existing) {
+            ;
+            existing.value.push(value);
+            return;
         }
-        ;
-        this.raw[key].push(value);
+        this.raw.push({ key, value: [value] });
     }
 }
 exports.default = Rows;

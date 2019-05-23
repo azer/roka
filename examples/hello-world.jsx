@@ -9,6 +9,8 @@ const HelloWorld = roka()
   .sans({ size: "3rem" })
   .color({ fg: "yellow", bg: "#FF6A86" })
   .select("&:hover", roka().color({ fg: "#ff6a86", bg: "yellow" }))
+  .rotate(-1.5)
+  .scale(1.5)
   .cond(({ randomNumber }) => randomNumber == 3, roka().color({ bg: "black" }))
   .with(({ randomNumber }) =>
     roka().select("&::after", roka().content(` (${randomNumber})`))
