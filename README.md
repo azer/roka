@@ -1,6 +1,6 @@
 # Roka
 
-High-level styling library for [styled-components](https://github.com/styled-components/styled-components).
+High-level styling library for [emotion](https://github.com/emotion-js/emotion).
 
 ## Install
 
