@@ -35,9 +35,7 @@ declare class Roka {
     }): Roka;
     easein(time: number, props?: string[]): Roka;
     easeout(time: number, props?: string[]): Roka;
-    element(tag?: string): (props: any) => import("react").ReactElement<{
-        className: string;
-    }, string | ((props: any) => import("react").ReactElement<any, string | any | (new (props: any) => import("react").Component<any, any, any>)>) | (new (props: any) => import("react").Component<any, any, any>)>;
+    element(tag?: string): (props: any) => import("react").DOMElement<any, Element>;
     fg(colorCode: string): Roka;
     fixed(options?: PositionOptions): Roka;
     front(): Roka;

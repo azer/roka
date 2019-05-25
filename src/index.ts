@@ -122,7 +122,7 @@ class Roka {
     return props => {
       return createElement(
         tag || "div",
-        { className: this.css(props) },
+        { ...props, className: this.css(props) },
         props.children
       )
     }

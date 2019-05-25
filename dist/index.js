@@ -96,7 +96,7 @@ class Roka {
     }
     element(tag) {
         return props => {
-            return react_1.createElement(tag || "div", { className: this.css(props) }, props.children);
+            return react_1.createElement(tag || "div", Object.assign({}, props, { className: this.css(props) }), props.children);
         };
     }
     fg(colorCode) {
